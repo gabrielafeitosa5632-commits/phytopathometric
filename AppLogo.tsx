@@ -1,5 +1,3 @@
-import logoPng from './Gemini_Generated_Image_2e1ezq2e1ezq2e1e.png';
-
 interface AppLogoProps {
   size?: number;
   className?: string;
@@ -8,7 +6,7 @@ interface AppLogoProps {
 export function AppLogo({ size = 48, className }: AppLogoProps) {
   return (
     <img
-      src={logoPng}
+      src="/logo-new.jpeg"
       width={size}
       height={size}
       className={className}
@@ -19,3 +17,4 @@ export function AppLogo({ size = 48, className }: AppLogoProps) {
 }
 
 export default AppLogo;
+

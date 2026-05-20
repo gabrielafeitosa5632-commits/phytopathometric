@@ -66,7 +66,7 @@ export default function Home() {
         <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border/60">
           <div className="max-w-lg mx-auto px-4 py-3 flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
-              <img src="/logo.png" alt="PhytoPathometric" className="w-full h-full object-cover" />
+              <img src="/logo-new.jpeg" alt="PhytoPathometric" className="w-full h-full object-contain" />
             </div>
             <div className="flex-1">
               <h1 className="font-display font-bold text-base text-foreground leading-tight">PhytoPathometric</h1>
@@ -100,3 +100,4 @@ export default function Home() {
     </AnalysisProvider>
   );
 }
+
