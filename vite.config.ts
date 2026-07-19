@@ -170,6 +170,12 @@ export default defineConfig({
     port: 3000,
     strictPort: false, // Will find next available port if 3000 is busy
     host: true,
+    proxy: {
+      "/api/segment-leaf": {
+        target: process.env.SEGMENTATION_API_PROXY_TARGET || "http://127.0.0.1:8000",
+        changeOrigin: true,
+      },
+    },
     allowedHosts: [
       ".manuspre.computer",
       ".manus.computer",
