@@ -66,7 +66,7 @@ function DiseaseCard({ disease }: { disease: DiseasePattern }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      className="card-phyto overflow-hidden"
+      className="glass-card overflow-hidden"
       style={{ borderLeft: `3px solid ${typeConf.color}` }}
     >
       {/* Header row */}
@@ -334,10 +334,7 @@ export function DoencasTab() {
     <div className="flex flex-col gap-4 pb-4">
 
       {/* Header */}
-      <div
-        className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155) 0%, oklch(0.32 0.09 155) 100%)' }}
-      >
+      <div className="gradient-banner">
         <div className="relative z-10">
           <div className="flex items-center gap-2 mb-1">
             <Stethoscope size={18} className="text-green-300" />
@@ -482,7 +479,7 @@ export function DoencasTab() {
 
       {/* Disease list */}
       {filtered.length === 0 ? (
-        <div className="card-phyto flex flex-col items-center py-12 gap-3 text-center">
+        <div className="glass-card flex flex-col items-center py-12 gap-3 text-center">
           <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center">
             <Stethoscope size={28} className="text-muted-foreground" />
           </div>
@@ -509,3 +506,5 @@ export function DoencasTab() {
     </div>
   );
 }
+
+

@@ -22,8 +22,7 @@ export function GaleriaTab() {
 
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}>
+      <div className="gradient-banner">
         <div className="flex items-center gap-2 mb-1">
           <Images size={18} className="text-green-300" />
           <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Galeria</span>
@@ -33,7 +32,7 @@ export function GaleriaTab() {
       </div>
 
       {withImages.length === 0 ? (
-        <div className="card-phyto flex flex-col items-center py-14 gap-3 text-center">
+        <div className="glass-card flex flex-col items-center py-14 gap-3 text-center">
           <Images size={32} className="text-muted-foreground/40" />
           <p className="font-semibold text-foreground">Nenhuma imagem ainda</p>
           <p className="text-muted-foreground text-sm">As imagens aparecem aqui após as análises.</p>
@@ -41,7 +40,7 @@ export function GaleriaTab() {
       ) : (
         <>
           {compareIds.length > 0 && (
-            <div className="card-phyto flex items-center gap-3 border-primary/30 bg-primary/5">
+            <div className="glass-card flex items-center gap-3 border-primary/30 bg-primary/5">
               <GitCompare size={16} className="text-primary flex-shrink-0" />
               <p className="text-xs text-primary font-medium flex-1">
                 {compareIds.length === 1 ? 'Selecione mais 1 para comparar' : 'Comparação pronta'}
@@ -149,3 +148,5 @@ export function GaleriaTab() {
     </div>
   );
 }
+
+

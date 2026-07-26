@@ -1,38 +1,130 @@
 /**
- * PhytoPathometric — Dashboard Tab
- * Stats, charts, weather, top crops
+ * PhytoPathometric — Premium Dashboard Tab
+ * Glassmorphism stat cards · Beautiful charts · Skeleton loading
  */
-import { useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart3, TrendingUp, TrendingDown, Leaf, Activity, Award, AlertTriangle } from 'lucide-react';
+import { useMemo, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  BarChart3, TrendingUp, TrendingDown, Leaf, Activity,
+  Award, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight,
+} from 'lucide-react';
 import { useAnalysis, severityConfig, SeverityLevel } from '@/contexts/AnalysisContext';
 import { WeatherWidget } from '@/components/WeatherWidget';
+import { useI18n } from '@/contexts/I18nContext';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line,
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 
 const SEVERITY_ORDER: SeverityLevel[] = ['saudavel', 'baixa', 'media', 'alta', 'critica'];
 
-function StatCard({ icon: Icon, label, value, sub, color }: {
-  icon: React.ElementType; label: string; value: string; sub?: string; color: string;
-}) {
+/* ── Skeleton ─────────────────────────────────────────────── */
+function SkeletonCard() {
   return (
-    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card-phyto flex items-center gap-3">
-      <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: color + '20' }}>
-        <Icon size={20} style={{ color }} />
+    <div className="glass-card animate-pulse">
+      <div className="flex items-center gap-3">
+        <div className="skeleton w-11 h-11 rounded-2xl" />
+        <div className="flex-1 space-y-2">
+          <div className="skeleton h-5 w-16 rounded-lg" />
+          <div className="skeleton h-3 w-24 rounded" />
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-display font-bold text-xl text-foreground leading-tight">{value}</p>
-        <p className="text-xs text-muted-foreground">{label}</p>
-        {sub && <p className="text-[10px] text-muted-foreground/70 mt-0.5">{sub}</p>}
+    </div>
+  );
+}
+
+function SkeletonChart() {
+  return (
+    <div className="glass-card animate-pulse space-y-3">
+      <div className="skeleton h-3 w-32 rounded" />
+      <div className="skeleton w-full rounded-xl" style={{ height: 180 }} />
+    </div>
+  );
+}
+
+/* ── Stat Card ─────────────────────────────────────────────── */
+interface StatCardProps {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  sub?: string;
+  color: string;
+  trend?: 'up' | 'down' | 'neutral';
+  delay?: number;
+}
+
+function StatCard({ icon: Icon, label, value, sub, color, trend, delay = 0 }: StatCardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, delay, ease: [0.4, 0, 0.2, 1] }}
+      className="glass-card card-lift group"
+    >
+      {/* Color accent top bar */}
+      <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-[20px] opacity-70"
+        style={{ background: `linear-gradient(90deg, ${color}, transparent)` }} />
+
+      <div className="flex items-start gap-3">
+        <div className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
+          style={{
+            background: `linear-gradient(135deg, ${color}22, ${color}10)`,
+            border: `1px solid ${color}25`,
+          }}>
+          <Icon size={20} style={{ color }} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-display font-bold text-xl text-foreground leading-tight">{value}</p>
+          <p className="text-xs text-muted-foreground mt-0.5 font-medium">{label}</p>
+          {sub && (
+            <p className="text-[10px] text-muted-foreground/60 mt-0.5 truncate">{sub}</p>
+          )}
+        </div>
+        {trend && (
+          <div className={`flex items-center gap-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-lg flex-shrink-0 ${
+            trend === 'up'
+              ? 'text-red-500 bg-red-50 dark:bg-red-500/10'
+              : trend === 'down'
+              ? 'text-green-600 bg-green-50 dark:bg-green-500/10'
+              : 'text-muted-foreground bg-secondary'
+          }`}>
+            {trend === 'up'
+              ? <ArrowUpRight size={10} />
+              : trend === 'down'
+              ? <ArrowDownRight size={10} />
+              : null}
+          </div>
+        )}
       </div>
     </motion.div>
   );
 }
 
+/* ── Custom Tooltip ─────────────────────────────────────────── */
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="chart-tooltip px-3 py-2">
+      <p className="text-[11px] font-semibold text-foreground mb-1">{label}</p>
+      {payload.map((p: any, i: number) => (
+        <p key={i} className="text-[11px]" style={{ color: p.color }}>
+          {p.value?.toFixed(1)}% — Severidade
+        </p>
+      ))}
+    </div>
+  );
+}
+
+/* ── Main Component ─────────────────────────────────────────── */
 export function DashboardTab() {
   const { history } = useAnalysis();
+  const { t } = useI18n();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 700);
+    return () => clearTimeout(timer);
+  }, []);
 
   const stats = useMemo(() => {
     if (history.length === 0) return null;
@@ -42,9 +134,9 @@ export function DashboardTab() {
 
     const distMap: Record<SeverityLevel, number> = { saudavel: 0, baixa: 0, media: 0, alta: 0, critica: 0 };
     history.forEach(i => distMap[i.nivel]++);
-    const distribution = SEVERITY_ORDER.map(k => ({
-      name: severityConfig[k].label, value: distMap[k], color: severityConfig[k].color,
-    })).filter(d => d.value > 0);
+    const distribution = SEVERITY_ORDER
+      .map(k => ({ name: severityConfig[k].label, value: distMap[k], color: severityConfig[k].color }))
+      .filter(d => d.value > 0);
 
     const cropMap: Record<string, { count: number; totalSev: number }> = {};
     history.forEach(i => {
@@ -67,133 +159,311 @@ export function DashboardTab() {
     return { avg, max, min, distribution, topCrops, trend, worstCrop };
   }, [history]);
 
+  /* ── Skeleton state ── */
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4 pb-4">
+        <div className="skeleton rounded-2xl" style={{ height: 120 }} />
+        <div className="grid grid-cols-2 gap-3">
+          {[...Array(4)].map((_, i) => <SkeletonCard key={i} />)}
+        </div>
+        <SkeletonChart />
+        <SkeletonChart />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <BarChart3 size={18} className="text-green-300" />
-          <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Dashboard</span>
-        </div>
-        <h2 className="font-display text-white text-xl font-bold">Estatísticas</h2>
-        <p className="text-green-200 text-sm mt-1">{history.length} análises registradas</p>
-      </div>
 
-      {history.length === 0 ? (
-        <div className="card-phyto flex flex-col items-center py-14 gap-3 text-center">
-          <BarChart3 size={32} className="text-muted-foreground/40" />
-          <p className="font-semibold text-foreground">Nenhuma análise ainda</p>
-          <p className="text-muted-foreground text-sm max-w-xs">Realize análises na aba "Analisar" para ver estatísticas.</p>
+      {/* ── Header Banner ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="gradient-banner"
+      >
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-7 h-7 rounded-xl flex items-center justify-center"
+              style={{ background: 'oklch(1 0 0 / 0.12)', border: '1px solid oklch(1 0 0 / 0.15)' }}>
+              <BarChart3 size={14} className="text-emerald-300" />
+            </div>
+            <span className="text-emerald-300 text-[11px] font-bold uppercase tracking-widest">
+              {t('dash.stats')}
+            </span>
+          </div>
+          <h2 className="font-display text-white text-2xl font-bold tracking-tight">
+            {t('dash.stats')}
+          </h2>
+          <p className="text-emerald-200/70 text-sm mt-1 font-medium">
+            {history.length} {t('history.analyses')}
+          </p>
         </div>
+      </motion.div>
+
+      {/* ── Empty state ── */}
+      {history.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="glass-card flex flex-col items-center py-16 gap-4 text-center"
+        >
+          <div className="w-16 h-16 rounded-3xl flex items-center justify-center"
+            style={{ background: 'oklch(0.35 0.12 155 / 0.1)', border: '1px solid oklch(0.35 0.12 155 / 0.15)' }}>
+            <BarChart3 size={28} style={{ color: 'oklch(0.55 0.14 155)' }} />
+          </div>
+          <div>
+            <p className="font-display font-bold text-lg text-foreground">{t('dash.noData')}</p>
+            <p className="text-muted-foreground text-sm mt-1 max-w-xs">
+              Realize análises na aba Analisar para ver estatísticas.
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">🌤️ {t('dash.weather')}</p>
+            <WeatherWidget />
+          </div>
+        </motion.div>
       ) : (
         <>
+          {/* ── Stat Grid ── */}
           <div className="grid grid-cols-2 gap-3">
-            <StatCard icon={Activity}     label="Sev. Média"       value={`${stats!.avg.toFixed(1)}%`} color="oklch(0.52 0.14 155)" />
-            <StatCard icon={TrendingUp}   label="Máxima"           value={`${stats!.max.toFixed(1)}%`} color="#EF4444" />
-            <StatCard icon={TrendingDown} label="Mínima"           value={`${stats!.min.toFixed(1)}%`} color="#22C55E" />
-            <StatCard icon={Award}        label="Total Análises"   value={`${history.length}`}          color="#F59E0B"
-              sub={`${stats!.topCrops[0]?.name ?? '—'} mais analisada`} />
+            <StatCard
+              icon={Activity}
+              label={t('dash.avgSev')}
+              value={`${stats!.avg.toFixed(1)}%`}
+              color="oklch(0.55 0.18 155)"
+              trend={stats!.avg > 25 ? 'up' : 'neutral'}
+              delay={0.05}
+            />
+            <StatCard
+              icon={TrendingUp}
+              label={t('dash.maxSev')}
+              value={`${stats!.max.toFixed(1)}%`}
+              color="#ef4444"
+              trend="up"
+              delay={0.1}
+            />
+            <StatCard
+              icon={TrendingDown}
+              label={t('dash.minSev')}
+              value={`${stats!.min.toFixed(1)}%`}
+              color="#22c55e"
+              trend="down"
+              delay={0.15}
+            />
+            <StatCard
+              icon={Award}
+              label={t('dash.total')}
+              value={`${history.length}`}
+              sub={stats!.topCrops[0]?.name ?? '—'}
+              color="#f59e0b"
+              delay={0.2}
+            />
           </div>
 
+          {/* ── Weather ── */}
           <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2 px-1">🌤️ Condições Climáticas</p>
+            <p className="label-xs mb-2 px-0.5">{t('dash.weather')}</p>
             <WeatherWidget />
           </div>
 
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card-phyto">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Evolução (últimas 10)</p>
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={stats!.trend} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.88 0.02 140 / 0.5)" />
-                <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(v: number) => [`${v}%`, 'Severidade']}
-                  contentStyle={{ borderRadius: '12px', fontSize: '12px', border: '1px solid oklch(0.88 0.02 140)' }} />
-                <Line type="monotone" dataKey="sev" stroke="oklch(0.42 0.12 155)" strokeWidth={2.5}
-                  dot={{ fill: 'oklch(0.42 0.12 155)', r: 4 }} activeDot={{ r: 6 }} />
-              </LineChart>
+          {/* ── Trend Chart ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25, duration: 0.45 }}
+            className="glass-card"
+          >
+            <p className="label-xs mb-4">{t('dash.trend')}</p>
+            <ResponsiveContainer width="100%" height={190}>
+              <AreaChart data={stats!.trend} margin={{ top: 4, right: 4, bottom: 0, left: -24 }}>
+                <defs>
+                  <linearGradient id="sevGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor="oklch(0.55 0.18 155)" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="oklch(0.55 0.18 155)" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.85 0.02 140 / 0.5)" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 9, fill: 'oklch(0.55 0.04 155)' }} axisLine={false} tickLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: 'oklch(0.55 0.04 155)' }} axisLine={false} tickLine={false} />
+                <Tooltip content={<CustomTooltip />} />
+                <Area
+                  type="monotone"
+                  dataKey="sev"
+                  stroke="oklch(0.55 0.18 155)"
+                  strokeWidth={2.5}
+                  fill="url(#sevGrad)"
+                  dot={{ fill: 'oklch(0.55 0.18 155)', r: 3.5, strokeWidth: 0 }}
+                  activeDot={{ r: 6, strokeWidth: 2, stroke: 'oklch(1 0 0 / 0.8)' }}
+                />
+              </AreaChart>
             </ResponsiveContainer>
           </motion.div>
 
+          {/* ── Distribution + Bar Chart ── */}
           <div className="grid grid-cols-1 gap-3">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="card-phyto">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Distribuição por Nível</p>
-              <div className="flex items-center gap-4">
-                <ResponsiveContainer width={110} height={110}>
+
+            {/* Pie distribution */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.30, duration: 0.45 }}
+              className="glass-card"
+            >
+              <p className="label-xs mb-4">Distribuição por Nível</p>
+              <div className="flex items-center gap-5">
+                <ResponsiveContainer width={120} height={120}>
                   <PieChart>
-                    <Pie data={stats!.distribution} cx="50%" cy="50%" innerRadius={28} outerRadius={52} dataKey="value" paddingAngle={3}>
-                      {stats!.distribution.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    <Pie
+                      data={stats!.distribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={32}
+                      outerRadius={56}
+                      dataKey="value"
+                      paddingAngle={3}
+                      strokeWidth={0}
+                    >
+                      {stats!.distribution.map((entry, i) => (
+                        <Cell key={i} fill={entry.color} />
+                      ))}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex flex-col gap-1.5 flex-1">
+                <div className="flex flex-col gap-2 flex-1">
                   {stats!.distribution.map(d => (
                     <div key={d.name} className="flex items-center gap-2 text-xs">
                       <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: d.color }} />
                       <span className="text-foreground font-medium flex-1">{d.name}</span>
-                      <span className="text-muted-foreground font-semibold">{d.value}</span>
+                      <span className="text-muted-foreground font-bold">{d.value}</span>
                     </div>
                   ))}
                 </div>
               </div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="card-phyto">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3">Sev. Média por Cultura</p>
-              <ResponsiveContainer width="100%" height={150}>
-                <BarChart data={stats!.topCrops} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.88 0.02 140 / 0.5)" />
-                  <XAxis dataKey="name" tick={{ fontSize: 9 }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 10 }} />
-                  <Tooltip formatter={(v: number) => [`${v}%`, 'Sev. Média']} contentStyle={{ borderRadius: '12px', fontSize: '12px' }} />
-                  <Bar dataKey="avgSev" fill="oklch(0.52 0.14 155)" radius={[6, 6, 0, 0]} />
+            {/* Bar chart by culture */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.35, duration: 0.45 }}
+              className="glass-card"
+            >
+              <p className="label-xs mb-4">{t('dash.byCulture')}</p>
+              <ResponsiveContainer width="100%" height={160}>
+                <BarChart data={stats!.topCrops} margin={{ top: 4, right: 4, bottom: 4, left: -24 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.85 0.02 140 / 0.5)" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 9, fill: 'oklch(0.55 0.04 155)' }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: 'oklch(0.55 0.04 155)' }} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomTooltip />} />
+                  <defs>
+                    <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%"   stopColor="oklch(0.60 0.20 155)" />
+                      <stop offset="100%" stopColor="oklch(0.40 0.13 155)" />
+                    </linearGradient>
+                  </defs>
+                  <Bar dataKey="avgSev" fill="url(#barGrad)" radius={[8, 8, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </motion.div>
           </div>
 
-          {stats!.worstCrop && +((stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)) >= 25 && (
-            <div className="card-phyto flex items-start gap-3 border-amber-200 bg-amber-50 dark:bg-amber-900/20">
-              <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-xs font-bold text-amber-700">Cultura em Alerta</p>
-                <p className="text-xs text-amber-600 mt-0.5">
-                  <strong>{stats!.worstCrop[0]}</strong> tem sev. média de{' '}
-                  <strong>{(stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)}%</strong>
-                </p>
-              </div>
-            </div>
-          )}
+          {/* ── Alert banner ── */}
+          <AnimatePresence>
+            {stats!.worstCrop && +((stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)) >= 25 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ delay: 0.4 }}
+                className="glass-card flex items-start gap-3"
+                style={{ borderLeft: '3px solid #f59e0b' }}
+              >
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ background: '#f59e0b18', border: '1px solid #f59e0b25' }}>
+                  <AlertTriangle size={16} className="text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Cultura em Alerta</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    <strong>{stats!.worstCrop[0]}</strong> — sev. média{' '}
+                    <strong>{(stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)}%</strong>
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="card-phyto">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-1.5">
-              <Leaf size={12} className="text-primary" />Top Culturas
+          {/* ── Top Crops ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.45 }}
+            className="glass-card"
+          >
+            <p className="label-xs mb-4 flex items-center gap-1.5">
+              <Leaf size={11} style={{ color: 'oklch(0.55 0.14 155)' }} />
+              {t('dash.topCrops')}
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {stats!.topCrops.map((c, i) => (
                 <div key={c.name} className="flex items-center gap-3">
-                  <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
-                    style={{ background: i === 0 ? '#F59E0B' : i === 1 ? '#9CA3AF' : 'oklch(0.52 0.14 155)' }}>
+                  <span
+                    className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+                    style={{
+                      background: i === 0
+                        ? 'linear-gradient(135deg, #f59e0b, #d97706)'
+                        : i === 1
+                        ? 'linear-gradient(135deg, #9ca3af, #6b7280)'
+                        : 'linear-gradient(135deg, oklch(0.55 0.18 155), oklch(0.38 0.12 155))',
+                      boxShadow: '0 2px 6px oklch(0 0 0 / 0.15)',
+                    }}>
                     {i + 1}
                   </span>
-                  <span className="flex-1 text-sm font-medium">{c.name}</span>
-                  <span className="text-xs text-muted-foreground">{c.analyses} análises</span>
-                  <span className="text-xs font-bold" style={{
-                    color: c.avgSev >= 75 ? '#EF4444' : c.avgSev >= 50 ? '#F97316' : c.avgSev >= 25 ? '#F59E0B' : '#22C55E'
-                  }}>{c.avgSev}%</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-semibold text-foreground truncate">{c.name}</span>
+                      <span
+                        className="text-xs font-bold ml-2 flex-shrink-0"
+                        style={{
+                          color: c.avgSev >= 75 ? '#ef4444'
+                            : c.avgSev >= 50 ? '#f97316'
+                            : c.avgSev >= 25 ? '#f59e0b'
+                            : '#22c55e',
+                        }}>
+                        {c.avgSev}%
+                      </span>
+                    </div>
+                    <div className="progress-bar">
+                      <motion.div
+                        className="progress-fill"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${c.avgSev}%` }}
+                        transition={{ duration: 0.8, delay: i * 0.1, ease: 'easeOut' }}
+                        style={{
+                          background: c.avgSev >= 75
+                            ? 'linear-gradient(90deg, #f97316, #ef4444)'
+                            : c.avgSev >= 50
+                            ? 'linear-gradient(90deg, #f59e0b, #f97316)'
+                            : c.avgSev >= 25
+                            ? 'linear-gradient(90deg, #84cc16, #f59e0b)'
+                            : 'linear-gradient(90deg, #22c55e, #84cc16)',
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground flex-shrink-0 w-12 text-right">
+                    {c.analyses} análises
+                  </span>
                 </div>
               ))}
             </div>
           </motion.div>
         </>
       )}
-
-      {history.length === 0 && (
-        <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2 px-1">🌤️ Condições Climáticas</p>
-          <WeatherWidget />
-        </div>
-      )}
     </div>
   );
 }
+

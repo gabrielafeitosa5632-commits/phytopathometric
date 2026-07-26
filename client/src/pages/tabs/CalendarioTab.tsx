@@ -141,8 +141,7 @@ export function CalendarioTab() {
 
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}>
+      <div className="gradient-banner">
         <div className="flex items-center gap-2 mb-1">
           <CalendarDays size={18} className="text-green-300" />
           <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Calendário Agrícola</span>
@@ -152,7 +151,7 @@ export function CalendarioTab() {
       </div>
 
       {alertCrops.length > 0 ? (
-        <div className="card-phyto border-amber-300 bg-amber-50">
+        <div className="glass-card border-amber-300 bg-amber-50">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle size={15} className="text-amber-500" />
             <p className="text-xs font-bold text-amber-700 uppercase tracking-wide">Alertas este mês</p>
@@ -170,7 +169,7 @@ export function CalendarioTab() {
           </div>
         </div>
       ) : (
-        <div className="card-phyto flex items-center gap-3 border-green-200 bg-green-50">
+        <div className="glass-card flex items-center gap-3 border-green-200 bg-green-50">
           <CheckCircle2 size={18} className="text-green-500 flex-shrink-0" />
           <p className="text-sm text-green-700 font-medium">Nenhum alerta crítico para este mês! ✅</p>
         </div>
@@ -181,3 +180,5 @@ export function CalendarioTab() {
     </div>
   );
 }
+
+

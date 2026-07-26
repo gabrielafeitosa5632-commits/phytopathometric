@@ -186,7 +186,7 @@ export function SobreTab() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="card-phyto flex flex-col items-center text-center py-4 gap-2"
+            className="glass-card flex flex-col items-center text-center py-4 gap-2"
           >
             <div className="w-9 h-9 rounded-xl bg-accent flex items-center justify-center">
               <stat.icon size={16} className="text-primary" />
@@ -198,7 +198,7 @@ export function SobreTab() {
       </div>
 
       {/* ── ABOUT ───────────────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-3">
+      <div className="glass-card space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Sobre o Projeto</h2>
@@ -226,7 +226,7 @@ export function SobreTab() {
       </div>
 
       {/* ── SEVERITY SCALE ──────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-3">
+      <div className="glass-card space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Escala de Severidade</h2>
@@ -276,7 +276,7 @@ export function SobreTab() {
       </div>
 
       {/* ── PIPELINE ────────────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-4">
+      <div className="glass-card space-y-4">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Pipeline de Processamento</h2>
@@ -325,7 +325,7 @@ export function SobreTab() {
             variants={fadeUp}
             initial="hidden"
             animate="show"
-            className="card-phyto space-y-2"
+            className="glass-card space-y-2"
             style={{ borderLeft: `3px solid ${sec.color}` }}
           >
             <div className="flex items-center gap-2">
@@ -343,7 +343,7 @@ export function SobreTab() {
       </div>
 
       {/* ── TECH STACK ──────────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-3">
+      <div className="glass-card space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Stack Tecnológico</h2>
@@ -366,7 +366,7 @@ export function SobreTab() {
       </div>
 
       {/* ── SUPPORTED CROPS ─────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-3">
+      <div className="glass-card space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Culturas Suportadas</h2>
@@ -386,8 +386,7 @@ export function SobreTab() {
 
       {/* ── INSTITUTION ─────────────────────────────────────────────────── */}
       <div
-        className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}
+        className="gradient-banner"
       >
         <div className="absolute inset-0 opacity-10"
           style={{
@@ -416,7 +415,7 @@ export function SobreTab() {
       </div>
 
       {/* ── REFERENCES ──────────────────────────────────────────────────── */}
-      <div className="card-phyto space-y-3">
+      <div className="glass-card space-y-3">
         <div className="flex items-center gap-2">
           <div className="w-1 h-5 rounded-full" style={{ background: 'oklch(0.42 0.12 155)' }} />
           <h2 className="font-display font-bold text-base text-foreground">Referências Bibliográficas</h2>
@@ -455,3 +454,5 @@ export function SobreTab() {
     </div>
   );
 }
+
+

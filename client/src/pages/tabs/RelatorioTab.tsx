@@ -107,8 +107,7 @@ export function RelatorioTab() {
 
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}>
+      <div className="gradient-banner">
         <div className="flex items-center gap-2 mb-1">
           <FileText size={18} className="text-green-300" />
           <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Relatório de Campo</span>
@@ -118,7 +117,7 @@ export function RelatorioTab() {
       </div>
 
       {history.length === 0 ? (
-        <div className="card-phyto flex flex-col items-center py-12 gap-3 text-center">
+        <div className="glass-card flex flex-col items-center py-12 gap-3 text-center">
           <FileText size={32} className="text-muted-foreground/40" />
           <p className="font-semibold text-muted-foreground">Nenhuma análise para relatório</p>
           <p className="text-xs text-muted-foreground/70">Realize análises primeiro.</p>
@@ -131,7 +130,7 @@ export function RelatorioTab() {
               { icon: Leaf,      label: 'Culturas',  value: Object.keys(byCrop).length,    color: '#22C55E' },
               { icon: Calendar,  label: 'Sev. Média', value: `${avg}%`,                    color: '#F59E0B' },
             ].map(s => (
-              <div key={s.label} className="card-phyto text-center py-3">
+              <div key={s.label} className="glass-card text-center py-3">
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center mx-auto mb-1" style={{ background: s.color + '20' }}>
                   <s.icon size={16} style={{ color: s.color }} />
                 </div>
@@ -141,7 +140,7 @@ export function RelatorioTab() {
             ))}
           </div>
 
-          <div className="card-phyto space-y-3">
+          <div className="glass-card space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Informações do Relatório</p>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-muted-foreground">Nome do Campo / Talhão</Label>
@@ -162,7 +161,7 @@ export function RelatorioTab() {
             <Printer size={18} />Gerar Relatório PDF
           </Button>
 
-          <div className="card-phyto space-y-2">
+          <div className="glass-card space-y-2">
             <p className="text-xs font-bold text-foreground flex items-center gap-1.5"><CheckCircle2 size={12} className="text-green-500" />O relatório inclui:</p>
             {['Resumo estatístico (média, máxima, mínima)', 'Análises por cultura', 'Tabela das 10 análises recentes', 'Suas observações de campo', 'Metodologia científica'].map(item => (
               <div key={item} className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -175,3 +174,5 @@ export function RelatorioTab() {
     </div>
   );
 }
+
+

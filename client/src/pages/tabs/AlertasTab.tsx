@@ -89,8 +89,7 @@ export function AlertasTab() {
 
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <div className="relative overflow-hidden rounded-2xl p-5"
-        style={{ background: 'linear-gradient(135deg, oklch(0.22 0.07 155), oklch(0.32 0.09 155))' }}>
+      <div className="gradient-banner">
         <div className="flex items-center gap-2 mb-1">
           <Bell size={18} className="text-green-300" />
           <span className="text-green-300 text-xs font-semibold uppercase tracking-wider">Alertas Inteligentes</span>
@@ -107,7 +106,7 @@ export function AlertasTab() {
       <div>
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2 px-1">📋 Alertas</p>
         {alerts.length === 0 ? (
-          <div className="card-phyto flex items-center gap-3 border-green-200 bg-green-50">
+          <div className="glass-card flex items-center gap-3 border-green-200 bg-green-50">
             <CheckCircle2 size={18} className="text-green-500 flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold text-green-700">Nenhum alerta</p>
@@ -145,7 +144,7 @@ export function AlertasTab() {
         )}
       </div>
 
-      <div className="card-phyto space-y-2">
+      <div className="glass-card space-y-2">
         <div className="flex items-center gap-2 mb-1">
           <Info size={14} className="text-primary" />
           <p className="text-xs font-bold text-foreground uppercase tracking-wide">Dicas Preventivas</p>
@@ -165,3 +164,5 @@ export function AlertasTab() {
     </div>
   );
 }
+
+

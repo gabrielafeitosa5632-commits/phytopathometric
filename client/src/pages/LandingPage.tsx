@@ -81,43 +81,52 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
 
       {/* ── NAV ─────────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 bg-card/90 backdrop-blur border-b border-border/60">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf size={16} className="text-primary-foreground" />
+      <nav className="sticky top-0 z-50"
+        style={{
+          background: 'oklch(1 0 0 / 0.75)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          borderBottom: '1px solid oklch(0.88 0.018 138 / 0.5)',
+          boxShadow: '0 1px 0 0 oklch(0.88 0.018 138 / 0.3)',
+        }}>
+        <div className="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+              style={{
+                background: 'linear-gradient(135deg, oklch(0.35 0.12 155), oklch(0.52 0.18 155))',
+                boxShadow: '0 4px 12px oklch(0.35 0.12 155 / 0.30)',
+              }}>
+              <Leaf size={16} className="text-white" />
             </div>
-            <span className="font-display font-bold text-base text-foreground">PhytoPathometric</span>
+            <span className="font-display font-bold text-base text-foreground tracking-tight">PhytoPathometric</span>
           </div>
 
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
-              <Button
-                size="sm"
+              <button
                 onClick={() => navigate('/app')}
-                className="gap-1.5 rounded-xl"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all btn-primary-glow"
+                style={{ background: 'linear-gradient(135deg, oklch(0.38 0.14 155), oklch(0.28 0.10 155))' }}
               >
                 Abrir App
                 <ChevronRight size={14} />
-              </Button>
+              </button>
             ) : (
               <>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => navigate('/login')}
-                  className="rounded-xl"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
                 >
                   Entrar
-                </Button>
-                <Button
-                  size="sm"
+                </button>
+                <button
                   onClick={() => navigate('/signup')}
-                  className="rounded-xl gap-1.5"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white transition-all btn-primary-glow"
+                  style={{ background: 'linear-gradient(135deg, oklch(0.38 0.14 155), oklch(0.28 0.10 155))' }}
                 >
                   Criar conta
                   <ChevronRight size={14} />
-                </Button>
+                </button>
               </>
             )}
           </div>
@@ -204,7 +213,7 @@ export default function LandingPage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('/signup')}
-                  className="h-12 px-8 rounded-xl font-semibold gap-2 text-base"
+                  className="h-12 px-8 rounded-xl font-semibold gap-2 text-base btn-primary-glow"
                   style={{ background: 'linear-gradient(135deg, #52B788, #2D6A4F)' }}
                 >
                   <Sprout size={18} />
@@ -297,13 +306,16 @@ export default function LandingPage() {
               key={f.title}
               variants={fadeUp}
               custom={i}
-              className="card-phyto flex flex-col gap-3 hover:shadow-md transition-shadow duration-200"
+              className="glass-card card-lift flex flex-col gap-3"
             >
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ background: 'oklch(0.88 0.06 155)' }}
+                className="w-11 h-11 rounded-2xl flex items-center justify-center"
+                style={{
+                  background: 'linear-gradient(135deg, oklch(0.35 0.12 155 / 0.15), oklch(0.55 0.18 155 / 0.08))',
+                  border: '1px solid oklch(0.35 0.12 155 / 0.20)',
+                }}
               >
-                <f.icon size={20} style={{ color: 'oklch(0.32 0.09 155)' }} />
+                <f.icon size={20} style={{ color: 'oklch(0.38 0.14 155)' }} />
               </div>
               <div>
                 <h3 className="font-display font-bold text-sm text-foreground mb-1">{f.title}</h3>

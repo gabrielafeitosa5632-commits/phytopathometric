@@ -1,8 +1,10 @@
 /**
- * PhytoPathometric — BottomNav
+ * PhytoPathometric — Premium BottomNav
+ * Glassmorphism mobile bottom navigation
  */
 import { Camera, BarChart2, Info, Settings, Stethoscope, LayoutDashboard, Bell, Images, CalendarDays, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useI18n } from '@/contexts/I18nContext';
 
 export type TabId = 'dashboard' | 'analisar' | 'historico' | 'galeria' | 'alertas' | 'calendario' | 'relatorio' | 'doencas' | 'sobre' | 'configuracoes';
 
@@ -11,54 +13,104 @@ interface BottomNavProps {
   onTabChange: (tab: TabId) => void;
 }
 
-// Mobile: show only most important 5 tabs
-const MOBILE_TABS = [
-  { id: 'dashboard'     as TabId, label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'analisar'      as TabId, label: 'Analisar',  icon: Camera },
-  { id: 'historico'     as TabId, label: 'Histórico', icon: BarChart2 },
-  { id: 'doencas'       as TabId, label: 'Doenças',   icon: Stethoscope },
-  { id: 'configuracoes' as TabId, label: 'Config.',   icon: Settings },
+const MOBILE_TAB_DEFS = [
+  { id: 'dashboard'     as TabId, key: 'nav.dashboard', icon: LayoutDashboard },
+  { id: 'analisar'      as TabId, key: 'nav.analyze',   icon: Camera },
+  { id: 'historico'     as TabId, key: 'nav.history',   icon: BarChart2 },
+  { id: 'doencas'       as TabId, key: 'nav.diseases',  icon: Stethoscope },
+  { id: 'configuracoes' as TabId, key: 'nav.settings',  icon: Settings },
 ];
 
-// All tabs for side menu
-export const ALL_TABS = [
-  { id: 'dashboard'     as TabId, label: 'Dashboard',   icon: LayoutDashboard },
-  { id: 'analisar'      as TabId, label: 'Analisar',    icon: Camera },
-  { id: 'historico'     as TabId, label: 'Histórico',   icon: BarChart2 },
-  { id: 'galeria'       as TabId, label: 'Galeria',     icon: Images },
-  { id: 'alertas'       as TabId, label: 'Alertas',     icon: Bell },
-  { id: 'calendario'    as TabId, label: 'Calendário',  icon: CalendarDays },
-  { id: 'relatorio'     as TabId, label: 'Relatório',   icon: FileText },
-  { id: 'doencas'       as TabId, label: 'Doenças',     icon: Stethoscope },
-  { id: 'sobre'         as TabId, label: 'Sobre',       icon: Info },
-  { id: 'configuracoes' as TabId, label: 'Config.',     icon: Settings },
+const ALL_TAB_DEFS = [
+  { id: 'dashboard'     as TabId, key: 'nav.dashboard', icon: LayoutDashboard },
+  { id: 'analisar'      as TabId, key: 'nav.analyze',   icon: Camera },
+  { id: 'historico'     as TabId, key: 'nav.history',   icon: BarChart2 },
+  { id: 'galeria'       as TabId, key: 'nav.gallery',   icon: Images },
+  { id: 'alertas'       as TabId, key: 'nav.alerts',    icon: Bell },
+  { id: 'calendario'    as TabId, key: 'nav.calendar',  icon: CalendarDays },
+  { id: 'relatorio'     as TabId, key: 'nav.report',    icon: FileText },
+  { id: 'doencas'       as TabId, key: 'nav.diseases',  icon: Stethoscope },
+  { id: 'sobre'         as TabId, key: 'nav.about',     icon: Info },
+  { id: 'configuracoes' as TabId, key: 'nav.settings',  icon: Settings },
 ];
+
+export const ALL_TABS = ALL_TAB_DEFS;
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
+  const { t } = useI18n();
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
-      style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(16px)', borderTop: '1px solid oklch(0.90 0.015 140)', boxShadow: '0 -1px 0 0 oklch(0.92 0.015 140), 0 -4px 16px rgba(0,0,0,0.04)' }}>
-      <div className="flex items-center justify-around px-1 py-1 max-w-lg mx-auto">
-        {MOBILE_TABS.map((tab) => {
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bottom-nav-glass"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+    >
+      <div className="flex items-center justify-around px-2 py-1.5 max-w-lg mx-auto">
+        {MOBILE_TAB_DEFS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
+          const label = t(tab.key);
+
           return (
-            <button key={tab.id} onClick={() => onTabChange(tab.id)}
-              className="flex flex-col items-center gap-0.5 py-2 px-3 rounded-xl transition-all duration-200 relative min-w-[60px]"
-              aria-label={tab.label}>
+            <button
+              key={tab.id}
+              onClick={() => onTabChange(tab.id)}
+              className="relative flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-2xl transition-all duration-250 min-w-[56px]"
+              aria-label={label}
+            >
+              {/* Active background pill */}
               {isActive && (
-                <motion.div layoutId="activeTab" className="absolute inset-0 rounded-xl"
-                  style={{ backgroundColor: 'oklch(0.92 0.04 155)' }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 35 }} />
+                <motion.div
+                  layoutId="bottomActive"
+                  className="absolute inset-0 rounded-2xl"
+                  style={{
+                    background: 'oklch(0.35 0.12 155 / 0.12)',
+                    border: '1px solid oklch(0.55 0.18 155 / 0.20)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                />
               )}
-              <div className="relative z-10 flex flex-col items-center gap-0.5">
-                <Icon size={20} strokeWidth={isActive ? 2.3 : 1.7}
-                  style={{ color: isActive ? 'oklch(0.28 0.09 155)' : 'oklch(0.60 0.04 155)' }} />
-                <span className="text-[9px] font-bold tracking-tight"
-                  style={{ color: isActive ? 'oklch(0.28 0.09 155)' : 'oklch(0.60 0.04 155)' }}>
-                  {tab.label}
-                </span>
+
+              {/* Icon container */}
+              <div className={`relative z-10 flex items-center justify-center w-7 h-7 rounded-xl transition-all duration-200 ${
+                isActive ? 'scale-110' : 'scale-100'
+              }`}>
+                {isActive && (
+                  <div className="absolute inset-0 rounded-xl"
+                    style={{ background: 'oklch(0.55 0.20 155 / 0.15)' }} />
+                )}
+                <Icon
+                  size={19}
+                  strokeWidth={isActive ? 2.2 : 1.7}
+                  className="relative z-10 transition-all duration-200"
+                  style={{
+                    color: isActive
+                      ? 'oklch(0.35 0.14 155)'
+                      : 'oklch(0.58 0.05 155)',
+                  }}
+                />
               </div>
+
+              <span
+                className="relative z-10 text-[9px] font-semibold tracking-tight transition-all duration-200"
+                style={{
+                  color: isActive
+                    ? 'oklch(0.30 0.12 155)'
+                    : 'oklch(0.58 0.05 155)',
+                  fontWeight: isActive ? 700 : 500,
+                }}
+              >
+                {label}
+              </span>
+
+              {/* Active indicator dot */}
+              {isActive && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-0.5 right-2.5 w-1.5 h-1.5 rounded-full"
+                  style={{ background: 'oklch(0.55 0.22 155)' }}
+                />
+              )}
             </button>
           );
         })}
