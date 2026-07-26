@@ -11,6 +11,7 @@ import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { I18nProvider } from "./contexts/I18nContext";
 import Home from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignInPage";
@@ -65,14 +66,16 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ThemeProvider defaultTheme="light" switchable={true}>
-          <TooltipProvider>
-            <Toaster position="top-center" richColors />
-            <Router />
-          </TooltipProvider>
-        </ThemeProvider>
-      </AuthProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <ThemeProvider defaultTheme="light" switchable={true}>
+            <TooltipProvider>
+              <Toaster position="top-center" richColors />
+              <Router />
+            </TooltipProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </I18nProvider>
     </ErrorBoundary>
   );
 }
