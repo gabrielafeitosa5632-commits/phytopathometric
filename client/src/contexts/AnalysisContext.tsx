@@ -8,6 +8,13 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 
 export type SeverityLevel = 'saudavel' | 'baixa' | 'media' | 'alta' | 'critica';
 
+export interface PredictedDisease {
+  name: string;
+  confidence: number; // 0-1
+  treatment: string[];
+  lesionType?: string;
+}
+
 export interface AnalysisResult {
   id: string;
   timestamp: Date;
@@ -20,6 +27,14 @@ export interface AnalysisResult {
   imageDataUrl?: string;
   processedImageDataUrl?: string;
   observacoes?: string;
+  // Disease prediction results
+  predictedDiseases?: PredictedDisease[];
+  dominantLesionType?: string;
+  recommendations?: {
+    immediate: string[];
+    preventive: string[];
+    monitoring: string[];
+  };
 }
 
 export interface AnalysisSettings {

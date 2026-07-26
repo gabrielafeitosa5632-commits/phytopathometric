@@ -6,7 +6,7 @@
  */
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, Loader2, RotateCcw, Save, ChevronDown, ChevronUp, Leaf, FlaskConical, Microscope } from 'lucide-react';
+import { Camera, Upload, Loader2, RotateCcw, Save, ChevronDown, ChevronUp, Leaf, FlaskConical, Microscope, AlertTriangle, Stethoscope, Pill, ShieldCheck, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -379,6 +379,176 @@ export function AnalisarTab() {
                 </motion.div>
               )}
             </AnimatePresence>
+
+            {/* Disease Predictions */}
+            {result.predictedDiseases && result.predictedDiseases.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="space-y-3"
+              >
+                {/* Section header */}
+                <div className="flex items-center gap-2">
+                  <Stethoscope size={15} className="text-primary" />
+                  <h3 className="font-display font-semibold text-sm text-foreground uppercase tracking-wide">
+                    Diagnóstico Provável
+                  </h3>
+                </div>
+
+                {result.predictedDiseases.map((disease, idx) => {
+                  const confidencePct = Math.round(disease.confidence * 100);
+                  const isTop = idx === 0;
+                  return (
+                    <div
+                      key={disease.name}
+                      className={`card-phyto space-y-3 ${isTop ? 'border-primary/30' : ''}`}
+                      style={isTop ? { borderColor: 'oklch(0.52 0.14 155)' } : {}}
+                    >
+                      {/* Disease name + confidence */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            {isTop && (
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground">
+                                Principal
+                              </span>
+                            )}
+                            <span className="font-display font-bold text-sm text-foreground">
+                              {disease.name}
+                            </span>
+                          </div>
+                          {disease.lesionType && (
+                            <span className="text-xs text-muted-foreground capitalize mt-0.5 block">
+                              Lesão: {disease.lesionType === 'necrotic' ? 'Necrótica' : disease.lesionType === 'chlorotic' ? 'Clorótica' : disease.lesionType === 'pustule' ? 'Pústula' : disease.lesionType}
+                            </span>
+                          )}
+                        </div>
+                        {/* Confidence badge */}
+                        <div className="flex flex-col items-center flex-shrink-0">
+                          <span
+                            className="text-sm font-bold px-2 py-1 rounded-xl"
+                            style={{
+                              backgroundColor: confidencePct >= 70 ? '#FEF2F2' : confidencePct >= 50 ? '#FFFBEB' : '#F0FDF4',
+                              color: confidencePct >= 70 ? '#B91C1C' : confidencePct >= 50 ? '#B45309' : '#15803D',
+                            }}
+                          >
+                            {confidencePct}%
+                          </span>
+                          <span className="text-[9px] text-muted-foreground mt-0.5">confiança</span>
+                        </div>
+                      </div>
+
+                      {/* Confidence bar */}
+                      <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${confidencePct}%` }}
+                          transition={{ duration: 0.8, ease: 'easeOut', delay: idx * 0.1 }}
+                          className="h-full rounded-full"
+                          style={{
+                            background: confidencePct >= 70
+                              ? 'linear-gradient(90deg, #F97316, #EF4444)'
+                              : confidencePct >= 50
+                              ? 'linear-gradient(90deg, #F59E0B, #F97316)'
+                              : 'linear-gradient(90deg, #22C55E, #84CC16)',
+                          }}
+                        />
+                      </div>
+
+                      {/* Treatments */}
+                      {disease.treatment.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <Pill size={12} className="text-muted-foreground" />
+                            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+                              Tratamento Recomendado
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {disease.treatment.slice(0, 3).map((t, i) => (
+                              <span
+                                key={i}
+                                className="px-2 py-1 rounded-lg text-[11px] font-medium bg-secondary text-secondary-foreground border border-border"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </motion.div>
+            )}
+
+            {/* Recommendations */}
+            {result.recommendations && (
+              result.recommendations.immediate.length > 0 ||
+              result.recommendations.preventive.length > 0 ||
+              result.recommendations.monitoring.length > 0
+            ) && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="card-phyto space-y-3"
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <ShieldCheck size={15} className="text-primary" />
+                  <h3 className="font-display font-semibold text-sm uppercase tracking-wide">Recomendações</h3>
+                </div>
+
+                {result.recommendations.immediate.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-bold text-red-600 uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                      <AlertTriangle size={10} /> Imediatas
+                    </p>
+                    <ul className="space-y-1">
+                      {result.recommendations.immediate.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-foreground">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.recommendations.preventive.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-bold text-amber-600 uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                      <Eye size={10} /> Preventivas
+                    </p>
+                    <ul className="space-y-1">
+                      {result.recommendations.preventive.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 flex-shrink-0" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.recommendations.monitoring.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-bold text-green-600 uppercase tracking-wide mb-1.5 flex items-center gap-1">
+                      <Microscope size={10} /> Monitoramento
+                    </p>
+                    <ul className="space-y-1">
+                      {result.recommendations.monitoring.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
+                          {r}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </motion.div>
+            )}
 
             {/* Save confirmation */}
             <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 border border-green-200">

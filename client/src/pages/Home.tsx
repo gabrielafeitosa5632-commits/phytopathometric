@@ -10,13 +10,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { BottomNav, TabId } from '@/components/BottomNav';
 import { AnalisarTab } from './tabs/AnalisarTab';
 import { HistoricoTab } from './tabs/HistoricoTab';
+import { DoencasTab } from './tabs/DoencasTab';
 import { SobreTab } from './tabs/SobreTab';
 import { ConfiguracoesTab } from './tabs/ConfiguracoesTab';
 import { AnalysisProvider } from '@/contexts/AnalysisContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { LogOut } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 const TAB_TITLES: Record<TabId, string> = {
   analisar: 'Analisar',
   historico: 'Histórico',
+  doencas: 'Doenças',
   sobre: 'Sobre',
   configuracoes: 'Configurações',
 };
@@ -36,11 +41,18 @@ const tabVariants = {
   }),
 };
 
-const TAB_ORDER: TabId[] = ['analisar', 'historico', 'sobre', 'configuracoes'];
+const TAB_ORDER: TabId[] = ['analisar', 'historico', 'doencas', 'sobre', 'configuracoes'];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>('analisar');
   const [direction, setDirection] = useState(0);
+  const { user, logout } = useAuth();
+  const [, navigate] = useLocation();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const handleTabChange = (tab: TabId) => {
     const currentIdx = TAB_ORDER.indexOf(activeTab);
@@ -73,6 +85,15 @@ export default function Home() {
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[10px] text-muted-foreground font-medium">Ativo</span>
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  title={`Sair (${user.name})`}
+                  className="ml-2 p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                >
+                  <LogOut size={14} />
+                </button>
+              )}
             </div>
           </div>
         </header>
@@ -92,6 +113,7 @@ export default function Home() {
               >
                 {activeTab === 'analisar' && <AnalisarTab />}
                 {activeTab === 'historico' && <HistoricoTab />}
+                {activeTab === 'doencas' && <DoencasTab />}
                 {activeTab === 'sobre' && <SobreTab />}
                 {activeTab === 'configuracoes' && <ConfiguracoesTab />}
               </motion.div>

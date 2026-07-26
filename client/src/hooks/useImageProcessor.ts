@@ -267,6 +267,69 @@ export function useImageProcessor() {
           }
           outCtx.putImageData(outData, 0, 0);
 
+          // Run advanced analysis to get disease predictions
+          const advancedResult = analyzeImageAdvanced(imageData);
+
+          // Match diseases from database
+          const matchedDiseases: Array<{ name: string; confidence: number; treatment: string[]; lesionType: string }> = [];
+          for (const disease of DISEASE_DATABASE) {
+            if (advancedResult.dominantLesionType === disease.lesionType) {
+              let confidence = 0;
+              if (advancedResult.lesionAnalysis.necrotic.percentage > 0 && disease.lesionType === 'necrotic') {
+                confidence = advancedResult.lesionAnalysis.necrotic.confidence;
+              } else if (advancedResult.lesionAnalysis.chlorotic.percentage > 0 && disease.lesionType === 'chlorotic') {
+                confidence = advancedResult.lesionAnalysis.chlorotic.confidence;
+              } else if (advancedResult.lesionAnalysis.pustule.percentage > 0 && disease.lesionType === 'pustule') {
+                confidence = advancedResult.lesionAnalysis.pustule.confidence;
+              }
+              if (confidence > 0.3) {
+                const treatments = [
+                  ...(disease.treatment.fungicide || []),
+                  ...(disease.treatment.bactericide || []),
+                  ...(disease.treatment.cultural || []),
+                ];
+                matchedDiseases.push({
+                  name: disease.name,
+                  confidence: Math.min(0.95, confidence + 0.1),
+                  treatment: treatments.slice(0, 4),
+                  lesionType: disease.lesionType,
+                });
+              }
+            }
+          }
+          matchedDiseases.sort((a, b) => b.confidence - a.confidence);
+
+          // Build recommendations
+          const topDisease = matchedDiseases[0];
+          const recommendations = {
+            immediate: [] as string[],
+            preventive: [] as string[],
+            monitoring: ['Monitorar evolução diariamente', 'Reavaliar em 7 dias', 'Registrar condições ambientais'],
+          };
+          if (topDisease) {
+            if (severidade > 50) {
+              recommendations.immediate = [
+                `Aplicar ${topDisease.treatment[0] || 'fungicida'} imediatamente`,
+                'Isolar plantas fortemente infectadas',
+                'Notificar agrônomo responsável',
+              ];
+            } else if (severidade > 25) {
+              recommendations.immediate = [
+                'Iniciar tratamento preventivo',
+                'Aumentar frequência de monitoramento',
+              ];
+            }
+            recommendations.preventive = topDisease.treatment.filter(t =>
+              t.toLowerCase().includes('rotação') ||
+              t.toLowerCase().includes('remover') ||
+              t.toLowerCase().includes('espaçamento') ||
+              t.toLowerCase().includes('preventiv')
+            ).slice(0, 3);
+            if (recommendations.preventive.length === 0) {
+              recommendations.preventive = topDisease.treatment.slice(0, 2);
+            }
+          }
+
           const result: AnalysisResult = {
             id: nanoid(8),
             timestamp: new Date(),
@@ -279,6 +342,9 @@ export function useImageProcessor() {
             imageDataUrl,
             processedImageDataUrl: outCanvas.toDataURL('image/jpeg', 0.85),
             observacoes,
+            predictedDiseases: matchedDiseases.slice(0, 3),
+            dominantLesionType: advancedResult.dominantLesionType,
+            recommendations,
           };
 
           resolve(result);

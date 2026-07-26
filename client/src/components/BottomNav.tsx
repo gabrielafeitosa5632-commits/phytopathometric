@@ -3,10 +3,10 @@
  * Mobile-first bottom navigation bar
  * Design: AgTech Dashboard Moderno — Emerald/Green palette
  */
-import { Camera, BarChart2, Info, Settings } from 'lucide-react';
+import { Camera, BarChart2, Info, Settings, Stethoscope } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export type TabId = 'analisar' | 'historico' | 'sobre' | 'configuracoes';
+export type TabId = 'analisar' | 'historico' | 'doencas' | 'sobre' | 'configuracoes';
 
 interface BottomNavProps {
   activeTab: TabId;
@@ -14,10 +14,11 @@ interface BottomNavProps {
 }
 
 const tabs = [
-  { id: 'analisar' as TabId, label: 'Analisar', icon: Camera },
-  { id: 'historico' as TabId, label: 'Histórico', icon: BarChart2 },
-  { id: 'sobre' as TabId, label: 'Sobre', icon: Info },
-  { id: 'configuracoes' as TabId, label: 'Config.', icon: Settings },
+  { id: 'analisar' as TabId,      label: 'Analisar',  icon: Camera },
+  { id: 'historico' as TabId,     label: 'Histórico', icon: BarChart2 },
+  { id: 'doencas' as TabId,       label: 'Doenças',   icon: Stethoscope },
+  { id: 'sobre' as TabId,         label: 'Sobre',     icon: Info },
+  { id: 'configuracoes' as TabId, label: 'Config.',   icon: Settings },
 ];
 
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
