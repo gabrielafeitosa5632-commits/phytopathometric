@@ -4,6 +4,7 @@
  * Scalable: swap localStorage calls with API calls when backend is ready.
  */
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { nanoid } from 'nanoid';
 
 export interface User {
   id: string;
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const newUser: User = {
-      id: crypto.randomUUID(),
+      id: nanoid(12),
       name: name.trim(),
       email: key,
       createdAt: new Date().toISOString(),

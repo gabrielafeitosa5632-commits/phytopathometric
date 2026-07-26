@@ -5,6 +5,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, Calendar, Leaf, BarChart3, CheckCircle2, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { useAnalysis, severityConfig } from '@/contexts/AnalysisContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -141,16 +144,15 @@ export function RelatorioTab() {
           <div className="card-phyto space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Informações do Relatório</p>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">Nome do Campo / Talhão</label>
-              <input type="text" value={fieldName} onChange={e => setFieldName(e.target.value)}
-                placeholder="Ex: Talhão Norte — Fazenda São João"
-                className="w-full h-10 px-3 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <Label className="text-xs font-semibold text-muted-foreground">Nome do Campo / Talhão</Label>
+              <Input type="text" value={fieldName} onChange={e => setFieldName(e.target.value)}
+                placeholder="Ex: Talhão Norte — Fazenda São João" className="h-10 rounded-xl" />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">Observações (opcional)</label>
-              <textarea value={notes} onChange={e => setNotes(e.target.value)}
+              <Label className="text-xs font-semibold text-muted-foreground">Observações (opcional)</Label>
+              <Textarea value={notes} onChange={e => setNotes(e.target.value)}
                 placeholder="Condições de campo, práticas aplicadas..."
-                rows={3} className="w-full px-3 py-2 rounded-xl border border-border bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring" />
+                rows={3} className="rounded-xl resize-none" />
             </div>
           </div>
 

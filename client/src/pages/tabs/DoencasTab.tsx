@@ -17,7 +17,7 @@ import { useAnalysis } from '@/contexts/AnalysisContext';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
-const TYPE_CONFIG: Record<DiseasePattern['type'], { label: string; color: string; bg: string; icon: React.FC<{ size?: number; className?: string }> }> = {
+const TYPE_CONFIG: Record<DiseasePattern['type'], { label: string; color: string; bg: string; icon: React.ElementType }> = {
   fungal:        { label: 'Fúngica',       color: '#92400E', bg: '#FEF3C7', icon: FlaskConical },
   bacterial:     { label: 'Bacteriana',     color: '#1D4ED8', bg: '#EFF6FF', icon: Bug },
   viral:         { label: 'Viral',          color: '#7C3AED', bg: '#F5F3FF', icon: Zap },

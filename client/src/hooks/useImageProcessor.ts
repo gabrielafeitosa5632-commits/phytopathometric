@@ -19,39 +19,6 @@ interface ProcessResult {
   maskImageDataUrl: string;
 }
 
-// Convert RGB to HSV
-function rgbToHsv(r: number, g: number, b: number): [number, number, number] {
-  r /= 255; g /= 255; b /= 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  const d = max - min;
-  let h = 0, s = 0;
-  const v = max;
-  if (max !== 0) s = d / max;
-  if (d !== 0) {
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-    else if (max === g) h = ((b - r) / d + 2) / 6;
-    else h = ((r - g) / d + 4) / 6;
-  }
-  return [h * 180, s * 255, v * 255];
-}
-
-// Convert RGB to CIELAB (approximate)
-function rgbToLab(r: number, g: number, b: number): [number, number, number] {
-  // sRGB to linear
-  const linearize = (c: number) => {
-    c /= 255;
-    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
-  };
-  const rl = linearize(r), gl = linearize(g), bl = linearize(b);
-  // Linear RGB to XYZ (D65)
-  const x = (rl * 0.4124564 + gl * 0.3575761 + bl * 0.1804375) / 0.95047;
-  const y = (rl * 0.2126729 + gl * 0.7151522 + bl * 0.0721750) / 1.00000;
-  const z = (rl * 0.0193339 + gl * 0.1191920 + bl * 0.9503041) / 1.08883;
-  const f = (t: number) => t > 0.008856 ? Math.cbrt(t) : 7.787 * t + 16 / 116;
-  const fx = f(x), fy = f(y), fz = f(z);
-  return [116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)];
-}
-
 // Simple Gaussian blur (3x3 kernel)
 function gaussianBlur(data: Uint8ClampedArray, width: number, height: number): Uint8ClampedArray {
   const kernel = [1, 2, 1, 2, 4, 2, 1, 2, 1];
