@@ -5,7 +5,7 @@
  * Design: AgTech Dashboard Moderno — Emerald/Green palette
  */
 import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import {
   Search, Stethoscope, Pill, Leaf, Thermometer, Droplets,
   ChevronDown, ChevronUp, FlaskConical, BookOpen, AlertTriangle,

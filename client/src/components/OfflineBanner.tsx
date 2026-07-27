@@ -4,7 +4,7 @@
  * Hooks into the browser online/offline events
  */
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import { WifiOff, Wifi, X } from 'lucide-react';
 
 export function OfflineBanner() {

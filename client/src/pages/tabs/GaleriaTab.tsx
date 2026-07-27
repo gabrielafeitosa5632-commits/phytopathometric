@@ -2,7 +2,7 @@
  * PhytoPathometric — Gallery Tab
  */
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import { Images, X, ZoomIn, Download, GitCompare } from 'lucide-react';
 import { useAnalysis, severityConfig } from '@/contexts/AnalysisContext';
 

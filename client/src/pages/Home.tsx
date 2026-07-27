@@ -3,7 +3,7 @@
  * Glassmorphism sidebar + animated transitions + responsive
  */
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import { BottomNav, ALL_TABS, TabId } from '@/components/BottomNav';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { AnalisarTab }     from './tabs/AnalisarTab';

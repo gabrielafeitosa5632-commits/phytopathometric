@@ -3,7 +3,7 @@
  * Glassmorphism stat cards · Beautiful charts · Skeleton loading
  */
 import { useMemo, useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import {
   BarChart3, TrendingUp, TrendingDown, Leaf, Activity,
   Award, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight,

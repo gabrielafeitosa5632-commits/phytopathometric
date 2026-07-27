@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import { BottomNav, TabId } from '@/components/BottomNav';
 import { AnalisarTab } from './tabs/AnalisarTab';
 import { HistoricoTab } from './tabs/HistoricoTab';

@@ -4,7 +4,7 @@
  * and manage multiple farm plots geographically.
  */
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 import {
   MapPin, Plus, Trash2, AlertTriangle, CheckCircle2, ChevronDown,
   ChevronUp, Navigation, Leaf, Bug, Info, Edit3, X, Save,

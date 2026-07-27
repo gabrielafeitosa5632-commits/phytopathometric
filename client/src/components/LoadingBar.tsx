@@ -4,7 +4,7 @@
  * Uses framer-motion for smooth shimmer + fill animation
  */
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from '@/lib/framer-safe';
 
 interface LoadingBarProps {
   loading: boolean;
