@@ -16,16 +16,18 @@ import { GaleriaTab }      from './tabs/GaleriaTab';
 import { AlertasTab }      from './tabs/AlertasTab';
 import { CalendarioTab }   from './tabs/CalendarioTab';
 import { RelatorioTab }    from './tabs/RelatorioTab';
+import { FieldMapTab }     from './tabs/FieldMapTab';
 import { AnalysisProvider }from '@/contexts/AnalysisContext';
 import { useAuth }         from '@/contexts/AuthContext';
 import { useTheme }        from '@/contexts/ThemeContext';
 import { useI18n }         from '@/contexts/I18nContext';
+import { useLoading }      from '@/contexts/LoadingContext';
 import { LogOut, Sun, Moon, Leaf, Sparkles } from 'lucide-react';
 import { useLocation }     from 'wouter';
 
 const TAB_ORDER: TabId[] = [
   'dashboard','analisar','historico','galeria','alertas',
-  'calendario','relatorio','doencas','sobre','configuracoes',
+  'calendario','relatorio','doencas','fieldmap','sobre','configuracoes',
 ];
 
 const tabVariants = {
@@ -45,6 +47,7 @@ function TabContent({ activeTab }: { activeTab: TabId }) {
       {activeTab === 'calendario'    && <CalendarioTab />}
       {activeTab === 'relatorio'     && <RelatorioTab />}
       {activeTab === 'doencas'       && <DoencasTab />}
+      {activeTab === 'fieldmap'      && <FieldMapTab />}
       {activeTab === 'sobre'         && <SobreTab />}
       {activeTab === 'configuracoes' && <ConfiguracoesTab />}
     </>
@@ -57,13 +60,18 @@ export default function Home() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { t } = useI18n();
+  const { startLoading, stopLoading } = useLoading();
   const [, navigate] = useLocation();
 
   const handleTabChange = (tab: TabId) => {
+    if (tab === activeTab) return;
     const ci = TAB_ORDER.indexOf(activeTab);
     const ni = TAB_ORDER.indexOf(tab);
     setDirection(ni > ci ? 1 : -1);
+    // Trigger loading bar on tab switch
+    startLoading();
     setActiveTab(tab);
+    setTimeout(() => stopLoading(), 350);
   };
 
   const activeLabel = t(ALL_TABS.find(tab => tab.id === activeTab)?.key ?? '');
@@ -335,19 +343,9 @@ export default function Home() {
               style={{ scrollbarWidth: 'thin' }}
             >
               <div className="px-4 sm:px-5 lg:px-8 pt-5 pb-28 lg:pb-10 max-w-2xl mx-auto lg:max-w-4xl xl:max-w-5xl">
-                <AnimatePresence mode="wait" custom={direction}>
-                  <motion.div
-                    key={activeTab}
-                    custom={direction}
-                    variants={tabVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
-                  >
-                    <TabContent activeTab={activeTab} />
-                  </motion.div>
-                </AnimatePresence>
+                <div key={activeTab}>
+                  <TabContent activeTab={activeTab} />
+                </div>
               </div>
             </div>
           </main>

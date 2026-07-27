@@ -8,33 +8,82 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 
 export type SeverityLevel = 'saudavel' | 'baixa' | 'media' | 'alta' | 'critica';
 
+export interface TreatmentDetail {
+  organic: string[];
+  chemical: string[];
+  preventive: string[];
+}
+
 export interface PredictedDisease {
   name: string;
-  confidence: number; // 0-1
-  treatment: string[];
+  scientific_name?: string;
+  disease_type?: "fungal" | "bacterial" | "viral" | "physiological" | "abiotic" | "healthy";
+  confidence: number; // 0–1  (kept for backward compat)
+  confidence_percent?: number; // 0–100
+  treatment: string[] | TreatmentDetail; // supports both old array and new object
   lesionType?: string;
+  is_primary?: boolean;
+  supporting_symptoms?: string[];
+  affected_leaf_area_percent?: number;
+}
+
+export interface TissueBreakdown {
+  healthy_percent: number;
+  chlorotic_percent: number;
+  necrotic_percent: number;
+  damaged_percent: number;
 }
 
 export interface AnalysisResult {
   id: string;
   timestamp: Date;
   cultura: string;
+
+  // ── Image quality ──────────────────────────────────────────────────────────
+  image_valid?: boolean;
+  image_quality_issue?: string | null;
+
+  // ── Crop detection ─────────────────────────────────────────────────────────
+  detected_crop?: string;
+  crop_confidence_percent?: number;
+
+  // ── Severity ───────────────────────────────────────────────────────────────
   severidade: number;
+  severity_label?: 'Saudável' | 'Leve' | 'Moderada' | 'Severa';
+
+  // ── Area metrics ───────────────────────────────────────────────────────────
   areaTotal: number;
   areaLesionada: number;
   areaSaudavel: number;
+  healthy_area_px_percent?: number;
+  lesion_area_px_percent?: number;
+
+  // ── Tissue segmentation ────────────────────────────────────────────────────
+  tissue_breakdown?: TissueBreakdown;
+
   nivel: SeverityLevel;
   imageDataUrl?: string;
   processedImageDataUrl?: string;
+  heatmapDataUrl?: string;
   observacoes?: string;
-  // Disease prediction results
+
+  // ── Diagnosis ─────────────────────────────────────────────────────────────
   predictedDiseases?: PredictedDisease[];
   dominantLesionType?: string;
+
   recommendations?: {
     immediate: string[];
     preventive: string[];
     monitoring: string[];
   };
+
+  // ── Explainability ─────────────────────────────────────────────────────────
+  analysis_summary?: string;
+  environmental_risk_factors?: string[];
+
+  // ── Flags ──────────────────────────────────────────────────────────────────
+  analysisUnavailable?: boolean;
+  engine_used?: 'ai' | 'local';
 }
 
 export interface AnalysisSettings {

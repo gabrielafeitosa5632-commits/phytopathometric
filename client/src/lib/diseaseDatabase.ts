@@ -531,6 +531,278 @@ export const DISEASE_DATABASE: DiseasePattern[] = [
     notes: 'Doença viral sem cura. Prevenção é essencial. Transmitida por vetores.',
     references: ['Fauquet et al. (2005)'],
   },
+
+  // ─── Additional Diseases for South Asian / Pakistani crops ───────────────
+
+  {
+    id: 'wheat_blast',
+    name: 'Brusone do Trigo',
+    scientificName: 'Magnaporthe triticum',
+    type: 'fungal',
+    lesionType: 'necrotic',
+    hsvSignature: {
+      hueRange: [20, 50],
+      saturationRange: [40, 180],
+      valueRange: [40, 130],
+      confidence: 0.88,
+    },
+    cielabSignature: {
+      lRange: [35, 65],
+      aRange: [5, 30],
+      bRange: [10, 35],
+      confidence: 0.86,
+    },
+    characteristics: {
+      borderType: 'sharp',
+      distribution: 'scattered',
+      progression: 'rapid',
+      haloPresence: true,
+      sporulationPattern: 'gray sporulation on bleached spikes',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Trigo', 'Wheat', 'Gandum'],
+    favorableConditions: {
+      temperature: [25, 35],
+      humidity: [80, 100],
+      rainfall: 'High humidity, warm nights',
+      pH: [5.5, 7.5],
+    },
+    treatment: {
+      fungicide: ['Trifloxistrobina', 'Azoxistrobina', 'Tebuconazol'],
+      cultural: ['Uso de sementes certificadas', 'Rotação de culturas', 'Eliminar resíduos infectados'],
+      resistant_varieties: ['Variedades resistentes recomendadas'],
+      preventive: ['Aplicação preventiva no espigamento'],
+    },
+    notes: 'Doença devastadora do trigo. Pode destruir toda a espiga.',
+    references: ['Islam et al. (2016)'],
+  },
+
+  {
+    id: 'cotton_leaf_curl',
+    name: 'Enrolamento Foliar do Algodão',
+    scientificName: 'Cotton leaf curl virus (CLCuV)',
+    type: 'viral',
+    lesionType: 'mottled',
+    hsvSignature: {
+      hueRange: [35, 80],
+      saturationRange: [30, 130],
+      valueRange: [120, 220],
+      confidence: 0.85,
+    },
+    cielabSignature: {
+      lRange: [55, 85],
+      aRange: [-20, 5],
+      bRange: [20, 55],
+      confidence: 0.83,
+    },
+    characteristics: {
+      borderType: 'diffuse',
+      distribution: 'systemic',
+      progression: 'moderate',
+      haloPresence: false,
+      sporulationPattern: 'none — leaf curling, vein darkening',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Algodão', 'Cotton', 'Kapas'],
+    favorableConditions: {
+      temperature: [28, 38],
+      humidity: [50, 80],
+      rainfall: 'Low to moderate',
+      pH: [6.0, 8.0],
+    },
+    treatment: {
+      cultural: [
+        'Remover e destruir plantas infectadas',
+        'Controlar mosca-branca (vetor)',
+        'Usar variedades resistentes',
+        'Evitar plantio tardio',
+      ],
+      preventive: ['Uso de inseticidas para controle do vetor', 'Monitoramento semanal'],
+    },
+    notes: 'Doença viral mais importante do algodão no Sul da Ásia. Sem tratamento curativo.',
+    references: ['Briddon & Markham (2000)'],
+  },
+
+  {
+    id: 'rice_blast',
+    name: 'Brusone do Arroz',
+    scientificName: 'Magnaporthe oryzae',
+    type: 'fungal',
+    lesionType: 'necrotic',
+    hsvSignature: {
+      hueRange: [15, 45],
+      saturationRange: [50, 200],
+      valueRange: [40, 140],
+      confidence: 0.91,
+    },
+    cielabSignature: {
+      lRange: [30, 60],
+      aRange: [10, 35],
+      bRange: [8, 30],
+      confidence: 0.90,
+    },
+    characteristics: {
+      borderType: 'sharp',
+      distribution: 'scattered',
+      progression: 'rapid',
+      haloPresence: true,
+      sporulationPattern: 'spindle-shaped lesions with gray center',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Arroz', 'Rice', 'Chawal'],
+    favorableConditions: {
+      temperature: [20, 30],
+      humidity: [85, 100],
+      rainfall: 'High rainfall, leaf wetness > 10h',
+      pH: [5.0, 7.0],
+    },
+    treatment: {
+      fungicide: ['Tricyclazole', 'Azoxistrobina', 'Isoprothiolane'],
+      cultural: ['Evitar excesso de nitrogênio', 'Melhorar drenagem', 'Espaçamento adequado'],
+      resistant_varieties: ['IR-64, IRRI varieties'],
+      preventive: ['Aplicação preventiva no perfilhamento e espigamento'],
+    },
+    notes: 'Doença mais destrutiva do arroz no mundo.',
+    references: ['Ou (1985)', 'Skamnioti & Gurr (2009)'],
+  },
+
+  {
+    id: 'sugarcane_rust',
+    name: 'Ferrugem da Cana-de-açúcar',
+    scientificName: 'Puccinia melanocephala',
+    type: 'fungal',
+    lesionType: 'pustule',
+    hsvSignature: {
+      hueRange: [8, 28],
+      saturationRange: [90, 255],
+      valueRange: [60, 160],
+      confidence: 0.87,
+    },
+    cielabSignature: {
+      lRange: [40, 68],
+      aRange: [25, 55],
+      bRange: [18, 48],
+      confidence: 0.85,
+    },
+    characteristics: {
+      borderType: 'sharp',
+      distribution: 'scattered',
+      progression: 'moderate',
+      haloPresence: false,
+      sporulationPattern: 'orange-brown pustules on leaf surface',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Cana-de-açúcar', 'Sugarcane', 'Ganna'],
+    favorableConditions: {
+      temperature: [18, 28],
+      humidity: [70, 95],
+      rainfall: 'Moderate with dew formation',
+      pH: [5.5, 7.5],
+    },
+    treatment: {
+      fungicide: ['Propiconazol', 'Trifloxistrobina', 'Azoxistrobina'],
+      cultural: ['Uso de variedades resistentes', 'Eliminação de folhas infectadas'],
+      preventive: ['Monitoramento na estação chuvosa'],
+    },
+    notes: 'Reduz rendimento e teor de açúcar significativamente.',
+    references: ['Walker (1981)'],
+  },
+
+  {
+    id: 'downy_mildew',
+    name: 'Míldio',
+    scientificName: 'Peronospora / Plasmopara spp.',
+    type: 'fungal',
+    lesionType: 'chlorotic',
+    hsvSignature: {
+      hueRange: [42, 78],
+      saturationRange: [15, 90],
+      valueRange: [140, 230],
+      confidence: 0.84,
+    },
+    cielabSignature: {
+      lRange: [65, 92],
+      aRange: [-18, 5],
+      bRange: [18, 50],
+      confidence: 0.82,
+    },
+    characteristics: {
+      borderType: 'gradual',
+      distribution: 'interveinal',
+      progression: 'moderate',
+      haloPresence: false,
+      sporulationPattern: 'white-gray fuzz on underside of leaf',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Videira', 'Milho', 'Tomate', 'Alface', 'Cebola'],
+    favorableConditions: {
+      temperature: [12, 20],
+      humidity: [90, 100],
+      rainfall: 'High humidity, cool temperatures',
+      pH: [5.5, 8.0],
+    },
+    treatment: {
+      fungicide: ['Cobre', 'Mancozeb', 'Fosetil-Al', 'Metalaxil'],
+      cultural: ['Melhorar ventilação', 'Evitar molhamento foliar noturno', 'Eliminar folhas doentes'],
+      preventive: ['Aplicação preventiva de cobre'],
+    },
+    notes: 'Favorecido por noites frias e úmidas. Esporula na face inferior da folha.',
+    references: ['Agrios (2005)'],
+  },
+
+  {
+    id: 'leaf_blight',
+    name: 'Queima das Folhas',
+    scientificName: 'Helminthosporium / Bipolaris spp.',
+    type: 'fungal',
+    lesionType: 'necrotic',
+    hsvSignature: {
+      hueRange: [10, 40],
+      saturationRange: [40, 180],
+      valueRange: [30, 110],
+      confidence: 0.86,
+    },
+    cielabSignature: {
+      lRange: [28, 58],
+      aRange: [8, 32],
+      bRange: [8, 28],
+      confidence: 0.84,
+    },
+    characteristics: {
+      borderType: 'irregular',
+      distribution: 'marginal',
+      progression: 'moderate',
+      haloPresence: false,
+      sporulationPattern: 'dark sporulation on necrotic tissue',
+    },
+    severityThresholds: {
+      healthy: [0, 9], low: [10, 24], medium: [25, 49], high: [50, 74], critical: [75, 100],
+    },
+    affectedCrops: ['Milho', 'Arroz', 'Trigo', 'Sorgo', 'Cana-de-açúcar'],
+    favorableConditions: {
+      temperature: [18, 30],
+      humidity: [75, 100],
+      rainfall: 'Warm humid conditions',
+      pH: [5.5, 7.5],
+    },
+    treatment: {
+      fungicide: ['Mancozeb', 'Propiconazol', 'Trifloxistrobina'],
+      cultural: ['Rotação de culturas', 'Eliminar resíduos de colheita', 'Uso de sementes sadias'],
+      preventive: ['Aplicação preventiva nas fases críticas'],
+    },
+    notes: 'Afeta principalmente cereais. Progride rapidamente em condições quentes e úmidas.',
+    references: ['Agrios (2005)'],
+  },
 ];
 
 export function findDiseaseByPattern(

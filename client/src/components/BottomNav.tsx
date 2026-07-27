@@ -2,11 +2,11 @@
  * PhytoPathometric — Premium BottomNav
  * Glassmorphism mobile bottom navigation
  */
-import { Camera, BarChart2, Info, Settings, Stethoscope, LayoutDashboard, Bell, Images, CalendarDays, FileText } from 'lucide-react';
+import { Camera, BarChart2, Info, Settings, Stethoscope, LayoutDashboard, Bell, Images, CalendarDays, FileText, Map } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/contexts/I18nContext';
 
-export type TabId = 'dashboard' | 'analisar' | 'historico' | 'galeria' | 'alertas' | 'calendario' | 'relatorio' | 'doencas' | 'sobre' | 'configuracoes';
+export type TabId = 'dashboard' | 'analisar' | 'historico' | 'galeria' | 'alertas' | 'calendario' | 'relatorio' | 'doencas' | 'fieldmap' | 'sobre' | 'configuracoes';
 
 interface BottomNavProps {
   activeTab: TabId;
@@ -30,6 +30,7 @@ const ALL_TAB_DEFS = [
   { id: 'calendario'    as TabId, key: 'nav.calendar',  icon: CalendarDays },
   { id: 'relatorio'     as TabId, key: 'nav.report',    icon: FileText },
   { id: 'doencas'       as TabId, key: 'nav.diseases',  icon: Stethoscope },
+  { id: 'fieldmap'      as TabId, key: 'nav.fieldmap',  icon: Map },
   { id: 'sobre'         as TabId, key: 'nav.about',     icon: Info },
   { id: 'configuracoes' as TabId, key: 'nav.settings',  icon: Settings },
 ];

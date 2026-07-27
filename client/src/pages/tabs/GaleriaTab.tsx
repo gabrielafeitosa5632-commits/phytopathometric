@@ -110,11 +110,10 @@ export function GaleriaTab() {
 
       <AnimatePresence>
         {selected && selectedItem && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          <div
             className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4 gap-4"
             onClick={() => setSelected(null)}>
-            <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-              className="relative max-w-2xl w-full" onClick={e => e.stopPropagation()}>
+            <div className="relative max-w-2xl w-full" onClick={e => e.stopPropagation()}>
               <img src={selectedItem.processedImageDataUrl || selectedItem.imageDataUrl}
                 className="w-full rounded-2xl object-contain max-h-[70vh]" />
               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent rounded-b-2xl">
@@ -137,12 +136,12 @@ export function GaleriaTab() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
             <span className="px-3 py-1.5 rounded-full text-sm font-bold text-white"
               style={{ background: severityConfig[selectedItem.nivel].color }}>
               {selectedItem.severidade.toFixed(2)}% — {severityConfig[selectedItem.nivel].label}
             </span>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

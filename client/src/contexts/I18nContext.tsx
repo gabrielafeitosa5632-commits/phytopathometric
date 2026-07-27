@@ -17,6 +17,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'nav.calendar':     'Calendário',
     'nav.report':       'Relatório',
     'nav.diseases':     'Doenças',
+    'nav.fieldmap':     'Mapa',
     'nav.about':        'Sobre',
     'nav.settings':     'Config.',
     // Common
@@ -91,6 +92,7 @@ const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'nav.calendar':     'Calendar',
     'nav.report':       'Report',
     'nav.diseases':     'Diseases',
+    'nav.fieldmap':     'Field Map',
     'nav.about':        'About',
     'nav.settings':     'Settings',
     // Common

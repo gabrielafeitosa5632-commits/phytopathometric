@@ -156,7 +156,19 @@ export function DashboardTab() {
     const worstCrop = Object.entries(cropMap)
       .sort((a, b) => (b[1].totalSev / b[1].count) - (a[1].totalSev / a[1].count))[0];
 
-    return { avg, max, min, distribution, topCrops, trend, worstCrop };
+    // Disease frequency
+    const diseaseFreq: Record<string, number> = {};
+    history.forEach(i => {
+      const n = i.predictedDiseases?.[0]?.name;
+      if (n && n !== 'Healthy Plant') diseaseFreq[n] = (diseaseFreq[n] || 0) + 1;
+    });
+    const topDiseases = Object.entries(diseaseFreq)
+      .sort((a, b) => b[1] - a[1]).slice(0, 5)
+      .map(([name, count]) => ({ name: name.length > 22 ? name.slice(0, 20) + '…' : name, count }));
+
+    const aiCount = history.filter(i => i.engine_used === 'ai').length;
+
+    return { avg, max, min, distribution, topCrops, trend, worstCrop, topDiseases, aiCount };
   }, [history]);
 
   /* ── Skeleton state ── */
@@ -371,30 +383,65 @@ export function DashboardTab() {
           </div>
 
           {/* ── Alert banner ── */}
-          <AnimatePresence>
-            {stats!.worstCrop && +((stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)) >= 25 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.4 }}
-                className="glass-card flex items-start gap-3"
-                style={{ borderLeft: '3px solid #f59e0b' }}
-              >
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: '#f59e0b18', border: '1px solid #f59e0b25' }}>
-                  <AlertTriangle size={16} className="text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Cultura em Alerta</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    <strong>{stats!.worstCrop[0]}</strong> — sev. média{' '}
-                    <strong>{(stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)}%</strong>
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {stats!.worstCrop && +((stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)) >= 25 && (
+            <div className="glass-card flex items-start gap-3" style={{ borderLeft: '3px solid #f59e0b' }}>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: '#f59e0b18', border: '1px solid #f59e0b25' }}>
+                <AlertTriangle size={16} className="text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-amber-700 dark:text-amber-400">Crop Alert</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  <strong>{stats!.worstCrop[0]}</strong> — avg severity{' '}
+                  <strong>{(stats!.worstCrop[1].totalSev / stats!.worstCrop[1].count).toFixed(1)}%</strong>
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* ── Disease frequency chart ── */}
+          {stats!.topDiseases.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38, duration: 0.45 }} className="glass-card">
+              <p className="label-xs mb-4 flex items-center gap-1.5">
+                <Sparkles size={11} style={{ color: 'oklch(0.55 0.14 155)' }} />
+                Most Detected Diseases
+              </p>
+              <div className="space-y-2.5">
+                {stats!.topDiseases.map((d, i) => (
+                  <div key={d.name} className="flex items-center gap-2">
+                    <span className="text-[10px] text-muted-foreground w-4 text-right">{i + 1}</span>
+                    <div className="flex-1">
+                      <div className="flex justify-between mb-0.5">
+                        <span className="text-xs font-semibold text-foreground truncate">{d.name}</span>
+                        <span className="text-[10px] text-muted-foreground ml-2 flex-shrink-0">{d.count}×</span>
+                      </div>
+                      <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
+                        <motion.div className="h-full rounded-full"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${(d.count / stats!.topDiseases[0].count) * 100}%` }}
+                          transition={{ duration: 0.7, delay: i * 0.08, ease: 'easeOut' }}
+                          style={{ background: 'linear-gradient(90deg, #EF4444, #F97316)' }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── AI vs Local engine pill ── */}
+          <div className="flex items-center gap-2 px-4 py-3 rounded-xl glass-card">
+            <div className="flex-1">
+              <p className="text-xs font-bold text-foreground">Analysis Engine Stats</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">
+                🤖 AI: {stats!.aiCount} · 💻 Local: {history.length - stats!.aiCount}
+              </p>
+            </div>
+            <div className="h-2 w-32 bg-secondary rounded-full overflow-hidden flex">
+              <div style={{ width: `${(stats!.aiCount / history.length) * 100}%`, background: '#3B82F6' }} className="rounded-l-full" />
+            </div>
+          </div>
 
           {/* ── Top Crops ── */}
           <motion.div

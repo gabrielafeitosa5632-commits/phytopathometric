@@ -83,15 +83,13 @@ export default function Home() {
 
         <main className="flex-1 overflow-hidden">
           <div className="max-w-lg mx-auto px-4 pt-4 pb-24 overflow-y-auto h-[calc(100vh-57px-64px)] scroll-smooth">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.div key={activeTab} custom={direction} variants={tabVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.2, ease: 'easeInOut' }}>
-                {activeTab === 'analisar' && <AnalisarTab />}
-                {activeTab === 'historico' && <HistoricoTab />}
-                {activeTab === 'sobre' && <SobreTab />}
-                {activeTab === 'configuracoes' && <ConfiguracoesTab />}
-                {activeTab === 'perfil' && <PerfilTab />}
-              </motion.div>
-            </AnimatePresence>
+            <div key={activeTab}>
+              {activeTab === 'analisar' && <AnalisarTab />}
+              {activeTab === 'historico' && <HistoricoTab />}
+              {activeTab === 'sobre' && <SobreTab />}
+              {activeTab === 'configuracoes' && <ConfiguracoesTab />}
+              {activeTab === 'perfil' && <PerfilTab />}
+            </div>
           </div>
         </main>
 

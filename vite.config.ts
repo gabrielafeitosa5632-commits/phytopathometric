@@ -175,6 +175,10 @@ export default defineConfig({
         target: process.env.SEGMENTATION_API_PROXY_TARGET || "http://127.0.0.1:8000",
         changeOrigin: true,
       },
+      "/api/analyze-disease": {
+        target: "http://127.0.0.1:3001",
+        changeOrigin: true,
+      },
     },
     allowedHosts: [
       ".manuspre.computer",
@@ -188,6 +192,11 @@ export default defineConfig({
     fs: {
       strict: true,
       deny: ["**/.*"],
+      allow: [
+        path.resolve(import.meta.dirname),
+        path.resolve(import.meta.dirname, "node_modules"),
+        "C:/Users/stattion4/Desktop/PhytoPathometric",
+      ],
     },
   },
 });

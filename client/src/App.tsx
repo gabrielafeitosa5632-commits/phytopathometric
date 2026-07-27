@@ -12,6 +12,10 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { I18nProvider } from "./contexts/I18nContext";
+import { LoadingProvider, useLoading } from "./contexts/LoadingContext";
+import { LoadingBar } from "./components/LoadingBar";
+import { OfflineBanner } from "./components/OfflineBanner";
+import { useOffline } from "./hooks/useOffline";
 import Home from "./pages/Home";
 import LandingPage from "./pages/LandingPage";
 import SignInPage from "./pages/SignInPage";
@@ -63,16 +67,31 @@ function Router() {
   );
 }
 
+/** Inner shell — has access to LoadingContext */
+function AppShell() {
+  const { isLoading } = useLoading();
+  useOffline(); // registers SW silently
+  return (
+    <>
+      <LoadingBar loading={isLoading} />
+      <OfflineBanner />
+      <Toaster position="top-center" richColors />
+      <Router />
+    </>
+  );
+}
+
 function App() {
   return (
     <ErrorBoundary>
       <I18nProvider>
         <AuthProvider>
           <ThemeProvider defaultTheme="light" switchable={true}>
-            <TooltipProvider>
-              <Toaster position="top-center" richColors />
-              <Router />
-            </TooltipProvider>
+            <LoadingProvider>
+              <TooltipProvider>
+                <AppShell />
+              </TooltipProvider>
+            </LoadingProvider>
           </ThemeProvider>
         </AuthProvider>
       </I18nProvider>

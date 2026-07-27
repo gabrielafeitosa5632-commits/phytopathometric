@@ -488,11 +488,9 @@ export function DoencasTab() {
         </div>
       ) : (
         <div className="space-y-3">
-          <AnimatePresence>
-            {filtered.map(disease => (
-              <DiseaseCard key={disease.id} disease={disease} />
-            ))}
-          </AnimatePresence>
+          {filtered.map(disease => (
+            <DiseaseCard key={disease.id} disease={disease} />
+          ))}
         </div>
       )}
 
